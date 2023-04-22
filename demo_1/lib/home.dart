@@ -1,6 +1,8 @@
 import 'package:demo_1/main.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:flutter_compass/flutter_compass.dart';
+import 'dart:math' as math;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -48,7 +50,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   Location location = Location();
-  String? lat,long;
+  String lat= "";
+  String long ="";
+  int _deslat = 35;
+  int _deslong = -100;
 
 
 
@@ -63,24 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   getLoc() async{
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
+    
     location.onLocationChanged.listen((LocationData currentLocation) {
       print("${currentLocation.longitude} : ${currentLocation.longitude}");
       setState(() {
@@ -147,9 +135,41 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               "Location: ${lat ?? "Loading ..."}, ${long ?? "Loading ..." }",
             ),
+            Text(
+              "Desired Location: ${_deslat}, ${_deslong}",
+            ),
+            //Text(
+            //  "Angle to Loc: ${math.atan2((int.parse(lat)-_deslat),(int.parse(long)-_deslong))}",
+            //),
             const Text(
               "Finding Nearest Landmark...",
             ),
+            StreamBuilder<CompassEvent>(
+                stream: FlutterCompass.events,
+                  builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                    return Text('Error reading heading: ${snapshot.error}');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                            child: CircularProgressIndicator(),
+                            );
+                }
+
+                double? direction = snapshot.data!.heading;
+
+        // if direction is null, then device does not support this sensor
+        // show error message
+              if (direction == null)
+                    return Center(
+                    child: Text("Device does not have sensors !"),
+              );
+
+        return Text((direction * (math.pi / 180) * -1).toString(),);
+              
+              
+                  }),
           ],
         ),
       ),
@@ -161,3 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
+
+

@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   location: ^4.4.0
   # sensors_plus: ^2.0.3
-  # flutter_compass: ^0.7.0
+  flutter_compass: ^0.7.0
   # permission_handler: ^10.2.0
   # firebase_core: ^2.10.0
 
