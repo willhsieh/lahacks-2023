@@ -21,15 +21,15 @@ class WelcomePage extends StatelessWidget {
                 margin: const EdgeInsets.only(left: 30, right: 10, top: 370),
                 
                 child: const Text("welcome to voyagAR",
-                                  style: TextStyle(fontFamily: 'Noto Sans', fontStyle: FontStyle.italic, fontSize: 24)),
+                                  style: TextStyle(fontFamily: 'Noto Sans', fontStyle: FontStyle.italic, fontSize: 26)),
               ),
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: const Color(0xFF00649C),
-          // elevation: 0,
-          foregroundColor: Colors.white,
+        floatingActionButton: FloatingActionButton.large(
+          backgroundColor: const Color(0xFFFAFAFA),
+          elevation: 0,
+          foregroundColor: Colors.black,
           onPressed: () {
             runApp(const HomePage());
           },

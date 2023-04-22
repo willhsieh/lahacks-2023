@@ -82,7 +82,7 @@ flutter:
     - family: Noto Sans
       fonts:
         - asset: fonts/Noto_Sans/NotoSans-Medium.ttf
-        - asset: fonts/Noto_Sans/NotoSans-LightItalic.ttf
+        - asset: fonts/Noto_Sans/NotoSans-MediumItalic.ttf
           style: italic
   #   - family: Schyler
   #     fonts:
