@@ -1,5 +1,6 @@
 import 'package:demo_1/main.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -46,6 +47,50 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  Location location = Location();
+  String? lat,long;
+
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getLoc();
+
+  }
+
+
+  getLoc() async{
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      print("${currentLocation.longitude} : ${currentLocation.longitude}");
+      setState(() {
+        
+        lat = currentLocation.latitude!.toStringAsFixed(2);
+        long = currentLocation.longitude!.toStringAsFixed(2);
+        
+      });
+    });
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -98,6 +143,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
+              "Location: ${lat ?? "Loading ..."}, ${long ?? "Loading ..." }",
+            ),
+            const Text(
+              "Finding Nearest Landmark...",
             ),
           ],
         ),
