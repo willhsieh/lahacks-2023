@@ -38,6 +38,9 @@ dependencies:
   sensors_plus: ^2.0.3
   flutter_compass: ^0.7.0
   permission_handler: ^10.2.0
+  firebase_core: ^2.10.0
+  flutter_geofire: ^2.0.3
+  firebase_database: ^10.1.1
 
 dev_dependencies:
   flutter_test:
