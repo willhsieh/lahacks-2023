@@ -38,6 +38,8 @@ dependencies:
   sensors_plus: ^2.0.3
   flutter_compass: ^0.7.0
   permission_handler: ^10.2.0
+  firebase_core: ^2.10.0
+  arkit_plugin: ^1.0.5
 
 dev_dependencies:
   flutter_test:
