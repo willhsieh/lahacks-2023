@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:arkit_plugin/arkit_plugin.dart';
-=======
->>>>>>> fba6048e295fa3f65735062354126acf94590ced
 
 import 'welcome.dart';
 import 'home.dart';
 
-<<<<<<< HEAD
 void test() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -18,15 +13,6 @@ void test() async {
 
 void main() {
   test();
-  return runApp(
-    const MaterialApp(
-      title: 'My app', // used by the OS task switcher
-      home: SafeArea(
-        child: MyScaffold(),
-      ),
-    ),
-=======
-void main() {
   runApp(WelcomePage());
 }
 
@@ -45,6 +31,20 @@ class MyColors {
       800: Color(0xFF00649C),
       900: Color(0xFF00649C),
     },
->>>>>>> fba6048e295fa3f65735062354126acf94590ced
+  );
+  static const MaterialColor c2 = MaterialColor(
+    0xFFFFFFFF,
+    <int, Color>{
+      50: Color(0xFFFFFFFF),
+      100: Color(0xFFFFFFFF),
+      200: Color(0xFFFFFFFF),
+      300: Color(0xFFFFFFFF),
+      400: Color(0xFFFFFFFF),
+      500: Color(0xFFFFFFFF),
+      600: Color(0xFFFFFFFF),
+      700: Color(0xFFFFFFFF),
+      800: Color(0xFFFFFFFF),
+      900: Color(0xFFFFFFFF),
+    },
   );
 }

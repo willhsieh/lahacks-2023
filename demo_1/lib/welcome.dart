@@ -1,3 +1,4 @@
+import 'package:demo_1/camera.dart';
 import 'package:demo_1/home.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +20,11 @@ class WelcomePage extends StatelessWidget {
               ),
               Container(
                 margin: const EdgeInsets.only(left: 30, right: 10, top: 370),
-                
                 child: const Text("welcome to voyagAR",
-                                  style: TextStyle(fontFamily: 'Noto Sans', fontStyle: FontStyle.italic, fontSize: 26)),
+                    style: TextStyle(
+                        fontFamily: 'Noto Sans',
+                        fontStyle: FontStyle.italic,
+                        fontSize: 26)),
               ),
             ],
           ),
@@ -31,7 +34,7 @@ class WelcomePage extends StatelessWidget {
           elevation: 0,
           foregroundColor: Colors.black,
           onPressed: () {
-            runApp(const HomePage());
+            runApp(MaterialApp(home: VoyagAR()));
           },
           child: const Icon(Icons.arrow_forward),
         ),
