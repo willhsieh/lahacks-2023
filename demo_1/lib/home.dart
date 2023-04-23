@@ -54,6 +54,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String long ="";
   int _deslat = 35;
   int _deslong = -100;
+  String desAng = "";
+  double desAng2 =0;
+  double bias = 10;
 
 
 
@@ -70,12 +73,13 @@ class _MyHomePageState extends State<MyHomePage> {
   getLoc() async{
     
     location.onLocationChanged.listen((LocationData currentLocation) {
-      print("${currentLocation.longitude} : ${currentLocation.longitude}");
+      print("${currentLocation.longitude} : ${currentLocation.latitude}");
       setState(() {
         
-        lat = currentLocation.latitude!.toStringAsFixed(2);
-        long = currentLocation.longitude!.toStringAsFixed(2);
-        
+        lat = currentLocation.latitude!.toStringAsFixed(5);
+        long = currentLocation.longitude!.toStringAsFixed(5);
+        desAng = (math.atan2((_deslong- currentLocation.longitude!),(_deslat-currentLocation.latitude!))*(180/math.pi)).toString();
+        desAng2 = (math.atan2((_deslong- currentLocation.longitude!),(_deslat-currentLocation.latitude!))*(180/math.pi));
       });
     });
   }
@@ -138,9 +142,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               "Desired Location: ${_deslat}, ${_deslong}",
             ),
-            //Text(
-            //  "Angle to Loc: ${math.atan2((int.parse(lat)-_deslat),(int.parse(long)-_deslong))}",
-            //),
+            Text(
+              "Angle to Loc: ${desAng ?? "Loading ..."}",
+            ),
             const Text(
               "Finding Nearest Landmark...",
             ),
@@ -165,6 +169,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Center(
                     child: Text("Device does not have sensors !"),
               );
+              if(direction <= desAng2 + bias && direction >= desAng2 - bias ){
+                return Text("Alignment Complete do AR"+ direction.toString());
+              }
+              else if(direction - desAng2 <180){
+                return Text("Turn Left");
+              }
+              else{
+                return Text("Turn Right");
+              }
 
         return Text((direction * (math.pi / 180) * -1).toString(),);
               
