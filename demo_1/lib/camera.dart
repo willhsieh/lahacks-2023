@@ -57,7 +57,7 @@ class _VoyagARState extends State<VoyagAR> {
       newColor = MyColors.c3;
     }
     setState(() {
-      _color1 = newColor;
+      _color2 = newColor;
     });
   }
 
