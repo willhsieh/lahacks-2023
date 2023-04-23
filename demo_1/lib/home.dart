@@ -1,4 +1,6 @@
+import 'package:demo_1/camera.dart';
 import 'package:demo_1/main.dart';
+import 'package:demo_1/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:arkit_plugin/arkit_plugin.dart';
@@ -35,14 +37,91 @@ class _NavBarExampleState extends State<NavBarExample> {
             style: TextStyle(
                 color: MyColors.c2, fontFamily: 'Noto Sans', fontSize: 20)),
       ),
-      child: Column(
-        children: <Widget>[
-          Container(height: 50, color: CupertinoColors.systemRed),
-          Container(height: 50, color: CupertinoColors.systemGreen),
-          Container(height: 50, color: CupertinoColors.systemBlue),
-          Container(height: 50, color: CupertinoColors.systemYellow),
-          // ARkit(),
-          CupertinoButtonExample()
+      child: CustomScrollView(
+        primary: false,
+        slivers: <Widget>[
+          SliverPadding(
+            padding: const EdgeInsets.all(20),
+            sliver: SliverGrid.count(
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              crossAxisCount: 1,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    // print("Container clicked");
+                    runApp(MaterialApp(home: VoyagAR()));
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    // color: MyColors.c1,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      boxShadow: [
+                            BoxShadow(
+                              color: MyColors.c5,
+                              offset: const Offset(
+                                0,
+                                5,
+                              ),
+                              blurRadius: 6.0,
+                              spreadRadius: 6.0,
+                            ), //BoxShadow
+                          ],
+                      image: DecorationImage(
+                        image: AssetImage("images/bear.jpg"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: const Text("Bruin Bear", style: TextStyle(fontFamily: 'Noto Sans', fontSize: 54, color: MyColors.c2)),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  // color: MyColors.c1,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                          BoxShadow(
+                            color: MyColors.c5,
+                            offset: const Offset(
+                              0,
+                              5,
+                            ),
+                            blurRadius: 6.0,
+                            spreadRadius: 6.0,
+                          ), //BoxShadow
+                        ],
+                    image: DecorationImage(
+                      image: AssetImage("images/bear.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: const Text("Bruin Bear", style: TextStyle(fontFamily: 'Noto Sans', fontSize: 54, color: MyColors.c2)),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  // color: MyColors.c1,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                          BoxShadow(
+                            color: MyColors.c5,
+                            offset: const Offset(0, 5),
+                            blurRadius: 6.0,
+                            spreadRadius: 6.0,
+                          ), //BoxShadow
+                        ],
+                    image: DecorationImage(
+                      image: AssetImage("images/bear.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: const Text("Bruin Bear", style: TextStyle(fontFamily: 'Noto Sans', fontSize: 54, color: MyColors.c2)),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

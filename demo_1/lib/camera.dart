@@ -1,3 +1,4 @@
+import 'package:demo_1/home.dart';
 import 'package:demo_1/main.dart';
 import 'package:flutter/material.dart';
 import 'package:arkit_plugin/arkit_plugin.dart';
@@ -80,6 +81,17 @@ class _VoyagARState extends State<VoyagAR> {
               margin: const EdgeInsets.only(left: 260, right: 30, top: 300),
               child: Icon(CupertinoIcons.arrow_right_circle_fill,
                   size: 120, color: _color2),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 300, right: 30, top: 650),
+              child: FloatingActionButton.extended(
+                backgroundColor: MyColors.c1,
+                foregroundColor: MyColors.c2,
+                onPressed: () {
+                    runApp(HomePage());
+                },
+                label: const Icon(Icons.home),
+              ),
             ),
           ],
         ),
