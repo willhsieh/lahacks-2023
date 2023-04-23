@@ -3,7 +3,29 @@ import 'package:flutter/material.dart';
 import 'welcome.dart';
 import 'home.dart';
 
-void main() {
+import 'package:flutter_geofire/flutter_geofire.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void test() async {
+  print("IN HERE");
+
+  String pathToReference = "Sites";
+  //Intializing geoFire
+  Geofire.initialize(pathToReference);
+
+  Map<String, dynamic> response2 = await Geofire.getLocation("Bruin Bear");
+
+  print(response2);
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    name: "lahacks2023",
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  //test();
   runApp(WelcomePage());
 }
 

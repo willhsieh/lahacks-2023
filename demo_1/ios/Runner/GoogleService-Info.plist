@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>468915066834-lqki59tp6gqupparqg8vedo27f1kseeq.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.468915066834-lqki59tp6gqupparqg8vedo27f1kseeq</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDVmUg2m_AyMbGhE97dQtDPExq0oKQBNwo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>468915066834</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>lahacks2023</string>
+	<key>PROJECT_ID</key>
+	<string>ideahacks2023-b62a6</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ideahacks2023-b62a6.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:468915066834:ios:28d6dfb8f11abfdc13da0b</string>
+	<key>DATABASE_URL</key>
+	<string>https://ideahacks2023-b62a6-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

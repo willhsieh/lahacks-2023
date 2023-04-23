@@ -4,6 +4,11 @@ import 'package:location/location.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'dart:math' as math;
 
+import 'dart:async';
+import 'package:flutter/services.dart';
+
+import 'package:flutter_geofire/flutter_geofire.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -50,8 +55,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   Location location = Location();
-  String lat= "";
-  String long ="";
+  String lat = "";
+  String long = "";
   double _deslat = 34;
   double _deslong = -130;
   String desAng = "";
@@ -59,42 +64,175 @@ class _MyHomePageState extends State<MyHomePage> {
   double bias = 10;
   double _x_delta = 0;
   double _y_delta = 0;
-
-
+  List<String> keysRetrieved = [];
 
   @override
-  void initState(){
+  void initState() {
     // TODO: implement initState
     super.initState();
-    initializeAng();
+    //initializeAng();
+    initPlatformState();
   }
 
-  initializeAng() async{
+/*
+  initializeAng() async {
     LocationData _locationData = await location.getLocation();
+
     setState(() {
-        lat = _locationData.latitude!.toStringAsFixed(5);
-        long = _locationData.longitude!.toStringAsFixed(5);
-        _x_delta = _deslong - _locationData.longitude!;
-        _y_delta = _deslat - _locationData.latitude!;
-        print("destination long" + _deslong.toString());
-        print("location long" + _locationData.longitude.toString());
-        print("desination lat" + _deslat.toString());
-        print("location lat" + _locationData.latitude.toString());
-        print(_x_delta.toString());
-        print(_y_delta.toString());
-        desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
-        if (desAng2 < 0) {
-          desAng2 += 360;
+      lat = _locationData.latitude!.toStringAsFixed(5);
+      long = _locationData.longitude!.toStringAsFixed(5);
+      _x_delta = _deslong - _locationData.longitude!;
+      _y_delta = _deslat - _locationData.latitude!;
+
+      desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
+      if (desAng2 < 0) {
+        desAng2 += 360;
+      }
+      desAng = desAng2.toString();
+    });
+  }
+  */
+
+  Future<void> initPlatformState() async {
+    LocationData _locationData = await location.getLocation();
+    print("grabbed location data");
+    String pathToReference = "Sites";
+
+    //Intializing geoFire
+    Geofire.initialize(pathToReference);
+
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      Geofire.queryAtLocation(
+              _locationData.latitude!, _locationData.longitude!, 0.1)!
+          .listen((map) async {
+        print(map);
+        if (map != null) {
+          var callBack = map['callBack'];
+
+          //latitude will be retrieved from map['latitude']
+          //longitude will be retrieved from map['longitude']
+
+          switch (callBack) {
+            case Geofire.onKeyEntered:
+              keysRetrieved.add(map["key"]);
+              break;
+
+            case Geofire.onKeyExited:
+              keysRetrieved.remove(map["key"]);
+              break;
+
+            case Geofire.onKeyMoved:
+//              keysRetrieved.add(map[callBack]);
+              break;
+
+            case Geofire.onGeoQueryReady:
+//              map["result"].forEach((key){
+//                keysRetrieved.add(key);
+//              });
+
+              break;
+          }
         }
-        desAng = desAng2.toString();
+        Map<String, dynamic> response =
+            await Geofire.getLocation(keysRetrieved[0]);
+        setState(() {
+          lat = _locationData.latitude!.toStringAsFixed(5);
+          long = _locationData.longitude!.toStringAsFixed(5);
+
+          //print(response);
+          //print(response["lng"]);
+          //print(response["lat"]);
+          double _x_delta = response["lng"] - _locationData.longitude!;
+          double _y_delta = response["lat"] - _locationData.latitude!;
+          desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
+          print(_x_delta);
+          print(_y_delta);
+          if (desAng2 < 0) {
+            desAng2 += 360;
+          }
+          desAng = desAng2.toString();
+        });
+      }).onError((error) {
+        print(error);
       });
+    } on PlatformException {
+//      response = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
   }
 
+  Future<void> updateLocation() async {
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      // Platform messages may fail, so we use a try/catch PlatformException.
+      try {
+        Geofire.queryAtLocation(
+                currentLocation.longitude!, currentLocation.longitude!, 0.1)!
+            .listen((map) async {
+          print(map);
+          if (map != null) {
+            var callBack = map['callBack'];
 
-  getLoc() async{
-    
+            //latitude will be retrieved from map['latitude']
+            //longitude will be retrieved from map['longitude']
+
+            switch (callBack) {
+              case Geofire.onKeyEntered:
+                keysRetrieved.add(map["key"]);
+                break;
+
+              case Geofire.onKeyExited:
+                keysRetrieved.remove(map["key"]);
+                break;
+
+              case Geofire.onKeyMoved:
+//              keysRetrieved.add(map[callBack]);
+                break;
+
+              case Geofire.onGeoQueryReady:
+//              map["result"].forEach((key){
+//                keysRetrieved.add(key);
+//              });
+
+                break;
+            }
+          }
+          Map<String, dynamic> response =
+              await Geofire.getLocation(keysRetrieved[0]);
+          setState(() {
+            lat = currentLocation.latitude!.toStringAsFixed(5);
+            long = currentLocation.longitude!.toStringAsFixed(5);
+            _x_delta = response["lng"] - currentLocation.longitude!;
+            _y_delta = response["lat"] - currentLocation.latitude!;
+
+            desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
+            if (desAng2 < 0) {
+              desAng2 += 360;
+            }
+            desAng = desAng2.toString();
+          });
+        }).onError((error) {
+          print(error);
+        });
+      } on PlatformException {
+//      response = 'Failed to get platform version.';
+      }
+
+      // If the widget was removed from the tree while the asynchronous platform
+      // message was in flight, we want to discard the reply rather than calling
+      // setState to update our non-existent appearance.
+      if (!mounted) return;
+    });
+  }
+/*
+  getLoc() async {
     location.onLocationChanged.listen((LocationData currentLocation) {
       print("${currentLocation.longitude} : ${currentLocation.latitude}");
+
       setState(() {
         lat = currentLocation.latitude!.toStringAsFixed(5);
         long = currentLocation.longitude!.toStringAsFixed(5);
@@ -105,6 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
   }
+  */
 
   void _incrementCounter() {
     setState(() {
@@ -159,7 +298,7 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Text(
-              "Location: ${lat ?? "Loading ..."}, ${long ?? "Loading ..." }",
+              "Location: ${lat ?? "Loading ..."}, ${long ?? "Loading ..."}",
             ),
             Text(
               "Desired Location: ${_deslat}, ${_deslong}",
@@ -172,43 +311,43 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             StreamBuilder<CompassEvent>(
                 stream: FlutterCompass.events,
-                  builder: (context, snapshot) {
-                if (snapshot.hasError) {
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
                     return Text('Error reading heading: ${snapshot.error}');
-                }
+                  }
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
-                            child: CircularProgressIndicator(),
-                            );
-                }
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                double direction = snapshot.data!.heading!;
-                direction += 90;
-                direction = 180 - direction;
-                if (direction < 0){
-                  direction += 360;
-                }
-        // if direction is null, then device does not support this sensor
-        // show error message
-              if (direction == null)
+                  double direction = snapshot.data!.heading!;
+                  direction += 90;
+                  direction = 180 - direction;
+                  if (direction < 0) {
+                    direction += 360;
+                  }
+                  // if direction is null, then device does not support this sensor
+                  // show error message
+                  if (direction == null)
                     return Center(
-                    child: Text("Device does not have sensors !"),
-              );
-              if(direction <= desAng2 + bias && direction >= desAng2 - bias ){
-                return Text("Alignment Complete do AR"+ direction.toString());
-              }
-              else if(direction - desAng2 < 0){
-                return Text("Turn Left" + desAng2.toString());
-              }
-              else{
-                return Text("Turn Right" + desAng2.toString());
-              }
+                      child: Text("Device does not have sensors !"),
+                    );
+                  if (direction <= desAng2 + bias &&
+                      direction >= desAng2 - bias) {
+                    return Text(
+                        "Alignment Complete do AR" + direction.toString());
+                  } else if (direction - desAng2 < 0) {
+                    return Text("Turn Left" + desAng2.toString());
+                  } else {
+                    return Text("Turn Right" + desAng2.toString());
+                  }
 
-        return Text((direction * (math.pi / 180) * -1).toString(),);
-              
-              
-                  }),
+                  return Text(
+                    (direction * (math.pi / 180) * -1).toString(),
+                  );
+                }),
           ],
         ),
       ),
@@ -220,7 +359,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-
-
