@@ -1,6 +1,8 @@
 # lahacks-2023
 LA Hacks 2023
 
+![](demo_1/images/logo.png)
+
 ## Inspiration
 We are inspired by the stories told by our first-generation immigrant parents. When moving to America it was difficult for them to adapt to their new surroundings. Even now, after living in America for decades, sometimes they still feel as if they aren’t truly at home. Thus we wanted to design an app that allows people from across the world to feel at home, no matter where they are. voyagAR tackles this problem by transforming an unfamiliar landscape into a few points of interest called Viewpoints. voyagAR came from the desire to create a unique, immersive way for people to explore the world around them. Traditional guided tours can be restrictive and costly, while voyagAR offers an assisted, community-driven experience that anyone can contribute to and participate in. 
 
