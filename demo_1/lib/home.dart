@@ -12,8 +12,8 @@ class HomePage extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.light),
+    return const MaterialApp(
+      // theme: CupertinoThemeData(brightness: Brightness.light),
       home: NavBarExample(),
     );
   }
@@ -28,16 +28,12 @@ class NavBarExample extends StatefulWidget {
 
 class _NavBarExampleState extends State<NavBarExample> {
   @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        // Try removing opacity to observe the lack of a blur effect and of sliding content.
-        backgroundColor: MyColors.c1,
-        middle: Text('voyagAR',
-            style: TextStyle(
-                color: MyColors.c2, fontFamily: 'Noto Sans', fontSize: 20)),
-      ),
-      child: CustomScrollView(
+  Widget build(BuildContext context) => Scaffold(
+      appBar: AppBar(
+          title: const Text('voyagAR'),
+          backgroundColor: MyColors.c1,
+        ),
+      body: CustomScrollView(
         primary: false,
         slivers: <Widget>[
           SliverPadding(
@@ -125,7 +121,7 @@ class _NavBarExampleState extends State<NavBarExample> {
         ],
       ),
     );
-  }
+  
 }
 
 class CupertinoButtonExample extends StatelessWidget {
