@@ -1,6 +1,8 @@
 import 'package:demo_1/main.dart';
+import 'package:demo_1/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:arkit_plugin/arkit_plugin.dart';
+import 'package:vector_math/vector_math.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 import 'package:flutter/cupertino.dart';
 import 'dart:math';
@@ -8,6 +10,8 @@ import 'dart:async';
 import 'package:location/location.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'dart:math' as math;
+import 'joe.dart';
+import 'package:collection/collection.dart';
 
 import 'package:flutter/services.dart';
 
@@ -192,7 +196,7 @@ class _VoyagARState extends State<VoyagAR> {
       _heading = heading;
     });
     _direction.addListener(() {
-      onARKitViewCreated(arkitController);
+      //refreshAR(point);
     });
   }
 
@@ -253,7 +257,9 @@ class _VoyagARState extends State<VoyagAR> {
         ),
         body: Stack(
           children: [
-            ARKitSceneView(onARKitViewCreated: onARKitViewCreated),
+            ARKitSceneView(
+                enableTapRecognizer: true,
+                onARKitViewCreated: onARKitViewCreated),
             AnimatedContainer(
               margin: const EdgeInsets.only(left: 30, right: 260, top: 300),
               duration: _animationDuration,
@@ -282,6 +288,26 @@ class _VoyagARState extends State<VoyagAR> {
 
   void onARKitViewCreated(ARKitController arkitController) {
     this.arkitController = arkitController;
+    this.arkitController.onARTap = (ar) {
+      final point = ar.firstWhereOrNull(
+        (o) => o.type == ARKitHitTestResultType.featurePoint,
+      );
+      if (point != null) {
+        refreshAR(point);
+      }
+    };
+  }
+
+  void refreshAR(ARKitTestResult point) async {
+    //vector.Matrix4? camMatrix = await arkitController.cameraProjectionMatrix();
+    //print(camMatrix!.toString());
+    //vector.Vector4 pos = camMatrix!.getColumn(3);
+
+    final position = vector.Vector3(
+      point.worldTransform.getColumn(3).x,
+      point.worldTransform.getColumn(3).y,
+      point.worldTransform.getColumn(3).z,
+    );
 
     final text = ARKitText(
       text: 'ur mom',
@@ -294,17 +320,18 @@ class _VoyagARState extends State<VoyagAR> {
     );
 
     try {
-      if (_direction.value == 0) {
+      if (_direction.value is int) {
+        print("correct");
+
         final node = ARKitNode(
             geometry: text,
-            position: vector.Vector3(0, 0, -0.5),
+            position: position,
             scale: vector.Vector3(0.02, 0.02, 0.02));
         arkitController.add(node);
-      }
+        print("spawned");
+      } else {}
     } catch (e) {
       print(e);
     }
-
-    //this.arkitController.remove(node.name);
   }
 }
