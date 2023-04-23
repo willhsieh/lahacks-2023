@@ -196,7 +196,7 @@ class _VoyagARState extends State<VoyagAR> {
       _heading = heading;
     });
     _direction.addListener(() {
-      //refreshAR(point);
+      //refreshAR();
     });
   }
 
@@ -322,7 +322,7 @@ class _VoyagARState extends State<VoyagAR> {
     try {
       if (_direction.value is int) {
         print("correct");
-
+        _direction.value = 0;
         final node = ARKitNode(
             geometry: text,
             position: position,
