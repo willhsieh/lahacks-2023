@@ -40,15 +40,16 @@ class _VoyagARState extends State<VoyagAR> {
   double _deslong = -130;
   String desAng = "";
   double desAng2 = 10;
-  double bias = 10;
+  double bias = 22;
   double _x_delta = 0;
   double _y_delta = 0;
   List<String> keysRetrieved = [];
   dynamic _heading;
   ValueNotifier<int> _direction = ValueNotifier(1);
+  late LocationData _locationData;
 
   Future<void> initPlatformState() async {
-    LocationData _locationData = await location.getLocation();
+    _locationData = await location.getLocation();
     print("grabbed location data");
     String pathToReference = "Sites";
 
@@ -60,7 +61,7 @@ class _VoyagARState extends State<VoyagAR> {
       Geofire.queryAtLocation(
               _locationData.latitude!, _locationData.longitude!, 0.1)!
           .listen((map) async {
-        print(map);
+        //print(map);
         if (map != null) {
           var callBack = map['callBack'];
 
@@ -100,15 +101,15 @@ class _VoyagARState extends State<VoyagAR> {
           double _x_delta = response["lng"] - _locationData.longitude!;
           double _y_delta = response["lat"] - _locationData.latitude!;
           desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
-          print(_x_delta);
-          print(_y_delta);
+          //print(_x_delta);
+          //print(_y_delta);
           if (desAng2 < 0) {
             desAng2 += 360;
           }
           desAng = desAng2.toString();
         });
       }).onError((error) {
-        print(error);
+        //print(error);
       });
     } on PlatformException {
 //      response = 'Failed to get platform version.';
@@ -118,63 +119,61 @@ class _VoyagARState extends State<VoyagAR> {
   }
 
   Future<void> updateLocation() async {
-    location.onLocationChanged.listen((LocationData currentLocation) {
-      // Platform messages may fail, so we use a try/catch PlatformException.
-      try {
-        Geofire.queryAtLocation(
-                currentLocation.longitude!, currentLocation.longitude!, 0.1)!
-            .listen((map) async {
-          print(map);
-          if (map != null) {
-            var callBack = map['callBack'];
+    try {
+      Geofire.queryAtLocation(
+              _locationData.latitude!, _locationData.longitude!, 0.1)!
+          .listen((map) async {
+        //print(map);
+        if (map != null) {
+          var callBack = map['callBack'];
 
-            switch (callBack) {
-              case Geofire.onKeyEntered:
-                keysRetrieved.add(map["key"]);
-                break;
+          switch (callBack) {
+            case Geofire.onKeyEntered:
+              keysRetrieved.add(map["key"]);
+              break;
 
-              case Geofire.onKeyExited:
-                keysRetrieved.remove(map["key"]);
-                break;
+            case Geofire.onKeyExited:
+              keysRetrieved.remove(map["key"]);
+              break;
 
-              case Geofire.onKeyMoved:
+            case Geofire.onKeyMoved:
 //              keysRetrieved.add(map[callBack]);
-                break;
+              break;
 
-              case Geofire.onGeoQueryReady:
+            case Geofire.onGeoQueryReady:
 //              map["result"].forEach((key){
 //                keysRetrieved.add(key);
 //              });
 
-                break;
-            }
+              break;
           }
-          Map<String, dynamic> response =
-              await Geofire.getLocation(keysRetrieved[0]);
-          setState(() {
-            lat = currentLocation.latitude!.toStringAsFixed(5);
-            long = currentLocation.longitude!.toStringAsFixed(5);
-            _x_delta = response["lng"] - currentLocation.longitude!;
-            _y_delta = response["lat"] - currentLocation.latitude!;
+        }
+        Map<String, dynamic> response =
+            await Geofire.getLocation(keysRetrieved[0]);
+        setState(() {
+          lat = _locationData.latitude!.toStringAsFixed(5);
+          long = _locationData.longitude!.toStringAsFixed(5);
+          _x_delta = response["lng"] - _locationData.longitude!;
+          _y_delta = response["lat"] - _locationData.latitude!;
 
-            desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
-            if (desAng2 < 0) {
-              desAng2 += 360;
-            }
-            desAng = desAng2.toString();
-          });
-        }).onError((error) {
-          print(error);
+          desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
+          if (desAng2 < 0) {
+            desAng2 += 360;
+          }
+          //desAng2 -= 30;
+          desAng = desAng2.toString();
         });
-      } on PlatformException {
+      }).onError((error) {
+        //(error);
+      });
+    } on PlatformException {
 //      response = 'Failed to get platform version.';
-      }
+    }
 
-      // If the widget was removed from the tree while the asynchronous platform
-      // message was in flight, we want to discard the reply rather than calling
-      // setState to update our non-existent appearance.
-      if (!mounted) return;
-    });
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
   }
 
   @override
@@ -201,24 +200,33 @@ class _VoyagARState extends State<VoyagAR> {
   }
 
   void compassCalc() {
+    updateLocation();
     int exit = 0;
     //print(_heading);
     double direction = _heading.heading!;
     //print(direction);
-    direction += 90;
+    //CHANGE LINE BELOW TO 200 IF TESTING OUTSIDE, MAY REQUIRE TWEAKING BASED ON PHONE
+    direction += 160;
     direction = 180 - direction;
     if (direction < 0) {
       direction += 360;
     }
     // if direction is null, then device does not support this sensor
     // show error message
-
-    if (direction <= desAng2 + bias && direction >= desAng2 - bias) {
+    print("direction:");
+    print(direction);
+    print("desang2:");
+    print(desAng2);
+    double finalAngle = direction - desAng2;
+    if (finalAngle < 0) {
+      finalAngle += 360;
+    }
+    if (0 <= finalAngle + bias && 0 >= finalAngle - bias) {
       exit = 0; //correct
-    } else if (direction - desAng2 < 0) {
-      exit = 1; //left
+    } else if (finalAngle > 0 && finalAngle < 180) {
+      exit = 2; //left
     } else {
-      exit = 2; //right
+      exit = 1; //right
     }
     //print(exit);
 
@@ -310,7 +318,7 @@ class _VoyagARState extends State<VoyagAR> {
     );
 
     final text = ARKitText(
-      text: 'ur mom',
+      text: 'John Wooden Statue',
       extrusionDepth: 1,
       materials: [
         ARKitMaterial(
@@ -322,7 +330,6 @@ class _VoyagARState extends State<VoyagAR> {
     try {
       if (_direction.value is int) {
         print("correct");
-        _direction.value = 0;
         final node = ARKitNode(
             geometry: text,
             position: position,

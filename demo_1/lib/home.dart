@@ -59,7 +59,7 @@ class _NavBarExampleState extends State<NavBarExample> {
 
   Future<void> initPlatformState() async {
     LocationData _locationData = await location.getLocation();
-    print("grabbed location data");
+    //print("grabbed location data");
     String pathToReference = "Sites";
 
     //Intializing geoFire
@@ -70,7 +70,8 @@ class _NavBarExampleState extends State<NavBarExample> {
       Geofire.queryAtLocation(
               _locationData.latitude!, _locationData.longitude!, 0.1)!
           .listen((map) async {
-        print(map);
+        //
+        //print(map);
         if (map != null) {
           var callBack = map['callBack'];
 
@@ -110,8 +111,8 @@ class _NavBarExampleState extends State<NavBarExample> {
           double _x_delta = response["lng"] - _locationData.longitude!;
           double _y_delta = response["lat"] - _locationData.latitude!;
           desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
-          print(_x_delta);
-          print(_y_delta);
+          //print(_x_delta);
+          //print(_y_delta);
           if (desAng2 < 0) {
             desAng2 += 360;
           }
@@ -134,7 +135,7 @@ class _NavBarExampleState extends State<NavBarExample> {
         Geofire.queryAtLocation(
                 currentLocation.longitude!, currentLocation.longitude!, 0.1)!
             .listen((map) async {
-          print(map);
+          //print(map);
           if (map != null) {
             var callBack = map['callBack'];
 
@@ -174,7 +175,7 @@ class _NavBarExampleState extends State<NavBarExample> {
             desAng = desAng2.toString();
           });
         }).onError((error) {
-          print(error);
+          //(error);
         });
       } on PlatformException {
 //      response = 'Failed to get platform version.';
