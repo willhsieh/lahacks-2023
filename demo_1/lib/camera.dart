@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:arkit_plugin/arkit_plugin.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:math';
+
 
 
 class VoyagAR extends StatefulWidget {
   @override
   _VoyagARState createState() => _VoyagARState();
+}
+
+int rand(){
+  return Random().nextInt(3);
 }
 
 class _VoyagARState extends State<VoyagAR> {
