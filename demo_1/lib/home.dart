@@ -52,21 +52,42 @@ class _MyHomePageState extends State<MyHomePage> {
   Location location = Location();
   String lat= "";
   String long ="";
-  int _deslat = 35;
-  int _deslong = -100;
+  double _deslat = 34;
+  double _deslong = -130;
   String desAng = "";
-  double desAng2 =0;
+  double desAng2 = 10;
   double bias = 10;
-
+  double _x_delta = 0;
+  double _y_delta = 0;
 
 
 
   @override
-  void initState() {
+  void initState(){
     // TODO: implement initState
     super.initState();
-    getLoc();
+    initializeAng();
+  }
 
+  initializeAng() async{
+    LocationData _locationData = await location.getLocation();
+    setState(() {
+        lat = _locationData.latitude!.toStringAsFixed(5);
+        long = _locationData.longitude!.toStringAsFixed(5);
+        _x_delta = _deslong - _locationData.longitude!;
+        _y_delta = _deslat - _locationData.latitude!;
+        print("destination long" + _deslong.toString());
+        print("location long" + _locationData.longitude.toString());
+        print("desination lat" + _deslat.toString());
+        print("location lat" + _locationData.latitude.toString());
+        print(_x_delta.toString());
+        print(_y_delta.toString());
+        desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
+        if (desAng2 < 0) {
+          desAng2 += 360;
+        }
+        desAng = desAng2.toString();
+      });
   }
 
 
@@ -75,11 +96,12 @@ class _MyHomePageState extends State<MyHomePage> {
     location.onLocationChanged.listen((LocationData currentLocation) {
       print("${currentLocation.longitude} : ${currentLocation.latitude}");
       setState(() {
-        
         lat = currentLocation.latitude!.toStringAsFixed(5);
         long = currentLocation.longitude!.toStringAsFixed(5);
-        desAng = (math.atan2((_deslong- currentLocation.longitude!),(_deslat-currentLocation.latitude!))*(180/math.pi)).toString();
-        desAng2 = (math.atan2((_deslong- currentLocation.longitude!),(_deslat-currentLocation.latitude!))*(180/math.pi));
+        _x_delta = _deslong - currentLocation.longitude!;
+        _y_delta = _deslat - currentLocation.latitude!;
+        desAng2 = (math.atan2(_y_delta, _x_delta)) * 180 / math.pi;
+        desAng = desAng2.toString();
       });
     });
   }
@@ -161,8 +183,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             );
                 }
 
-                double? direction = snapshot.data!.heading;
-
+                double direction = snapshot.data!.heading!;
+                direction += 90;
+                direction = 180 - direction;
+                if (direction < 0){
+                  direction += 360;
+                }
         // if direction is null, then device does not support this sensor
         // show error message
               if (direction == null)
@@ -172,11 +198,11 @@ class _MyHomePageState extends State<MyHomePage> {
               if(direction <= desAng2 + bias && direction >= desAng2 - bias ){
                 return Text("Alignment Complete do AR"+ direction.toString());
               }
-              else if(direction - desAng2 <180){
-                return Text("Turn Left");
+              else if(direction - desAng2 < 0){
+                return Text("Turn Left" + desAng2.toString());
               }
               else{
-                return Text("Turn Right");
+                return Text("Turn Right" + desAng2.toString());
               }
 
         return Text((direction * (math.pi / 180) * -1).toString(),);
